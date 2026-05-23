@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package magicbox.release.v1;
+
+option java_package = "kr.magicbox.order.grpc.release";
+option java_outer_classname = "ReleaseServiceProto";
+option java_multiple_files = true;
+
+service ReleaseService {
+  rpc IncreaseSoldQuantity(IncreaseSoldQuantityRequest) returns (IncreaseSoldQuantityResponse);
+}
+
+message IncreaseSoldQuantityRequest {
+  int64 release_id = 1;
+}
+
+message IncreaseSoldQuantityResponse {
+  bool sold_out = 1;
+}

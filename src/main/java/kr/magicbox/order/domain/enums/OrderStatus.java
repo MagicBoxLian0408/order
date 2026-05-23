@@ -1,0 +1,18 @@
+package kr.magicbox.order.domain.enums;
+
+public enum OrderStatus {
+    PENDING,
+    STOCK_RESERVED,
+    PAYMENT_COMPLETED,
+    PREPARING,
+    CONFIRMED,
+    DELIVERING,
+    DELIVERED,
+    COMPLAINING,
+    PURCHASE_CONFIRMED,
+    CANCELLING,
+    CANCELLED,
+    CANCELLATION_FAILED,
+    STOCK_FAILED,
+    PAYMENT_FAILED
+}
