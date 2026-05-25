@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/lian2945/magicbox-order
+  IMAGE_NAME: ghcr.io/magicboxlian0408/order
 
 jobs:
   build-and-push:
