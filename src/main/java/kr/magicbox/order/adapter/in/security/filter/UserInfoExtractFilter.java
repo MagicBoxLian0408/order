@@ -4,32 +4,18 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.magicbox.order.adapter.in.security.properties.TrustedIpProperties;
 import kr.magicbox.order.domain.vo.UserId;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
-@RequiredArgsConstructor
 public class UserInfoExtractFilter extends OncePerRequestFilter {
-
-    private final TrustedIpProperties trustedIpProperties;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String clientIp = request.getRemoteAddr();
-
-        if (!isTrustedIp(clientIp, trustedIpProperties.getIps())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String userIdHeader = request.getHeader("X-User-Id");
 
         if (!isValidUserId(userIdHeader)) {
@@ -42,11 +28,6 @@ public class UserInfoExtractFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isTrustedIp(String clientIp, List<String> trustedIps) {
-        return trustedIps.stream()
-                .anyMatch(trusted -> new IpAddressMatcher(trusted).matches(clientIp));
     }
 
     private boolean isValidUserId(String userIdHeader) {
