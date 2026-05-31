@@ -1,6 +1,8 @@
 package kr.magicbox.order.application.service;
 
 import kr.magicbox.order.application.dto.command.CreateOrderCommand;
+import kr.magicbox.order.application.dto.result.CreateOrderResult;
+import kr.magicbox.order.application.dto.result.OrderLineResult;
 import kr.magicbox.order.application.port.in.CreateOrderUseCase;
 import kr.magicbox.order.application.port.out.OrderOutboxPort;
 import kr.magicbox.order.application.port.out.OrderRepositoryPort;
@@ -22,7 +24,7 @@ public class CreateOrderService implements CreateOrderUseCase {
 
     @Transactional
     @Override
-    public void createOrder(CreateOrderCommand command) {
+    public CreateOrderResult createOrder(CreateOrderCommand command) {
         List<OrderLine> orderLines = command.orderLines().stream()
                 .map(line -> OrderLine.createBuilder()
                         .productId(line.productId())
@@ -43,5 +45,21 @@ public class CreateOrderService implements CreateOrderUseCase {
 
         Long savedOrderId = orderRepositoryPort.save(order);
         orderOutboxPort.save(OrderPrepareEvent.from(savedOrderId, order));
+
+        List<OrderLineResult> orderLineResults = command.orderLines().stream()
+                .map(line -> OrderLineResult.builder()
+                        .productId(line.productId())
+                        .productName(line.productName())
+                        .quantity(line.quantity())
+                        .unitPrice(line.unitPrice())
+                        .build())
+                .toList();
+
+        return CreateOrderResult.builder()
+                .orderId(savedOrderId)
+                .sellerId(command.sellerId())
+                .totalAmount(command.totalAmount())
+                .orderLines(orderLineResults)
+                .build();
     }
 }
