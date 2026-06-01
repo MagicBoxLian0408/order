@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import kr.magicbox.order.adapter.in.web.dto.request.CancelOrderRequest;
 import kr.magicbox.order.adapter.in.web.dto.request.CreateOrderRequest;
 import kr.magicbox.order.adapter.in.web.dto.request.CreateReleaseOrderRequest;
+import kr.magicbox.order.adapter.in.web.dto.response.CreateOrderResponse;
 import kr.magicbox.order.application.dto.command.ConfirmOrderCommand;
 import kr.magicbox.order.application.dto.command.PurchaseConfirmOrderCommand;
 import kr.magicbox.order.application.port.in.CancelOrderUseCase;
@@ -34,21 +35,23 @@ public class OrderCommandController {
     private final ComplainOrderLineUseCase complainOrderLineUseCase;
 
     @PostMapping
-    public ResponseEntity<Void> createOrder(
+    public ResponseEntity<CreateOrderResponse> createOrder(
             @AuthenticationPrincipal UserId userId,
             @Valid @RequestBody CreateOrderRequest request
     ) {
-        createOrderUseCase.createOrder(request.toCommand(userId.value()));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        CreateOrderResponse response = CreateOrderResponse.from(
+                createOrderUseCase.createOrder(request.toCommand(userId.value())));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/release")
-    public ResponseEntity<Void> createReleaseOrder(
+    public ResponseEntity<CreateOrderResponse> createReleaseOrder(
             @AuthenticationPrincipal UserId userId,
             @Valid @RequestBody CreateReleaseOrderRequest request
     ) {
-        createReleaseOrderUseCase.createReleaseOrder(request.toCommand(userId.value()));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        CreateOrderResponse response = CreateOrderResponse.from(
+                createReleaseOrderUseCase.createReleaseOrder(request.toCommand(userId.value())));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/{orderId}/confirm")

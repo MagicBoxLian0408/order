@@ -1,6 +1,8 @@
 package kr.magicbox.order.application.service;
 
 import kr.magicbox.order.application.dto.command.CreateReleaseOrderCommand;
+import kr.magicbox.order.application.dto.result.CreateOrderResult;
+import kr.magicbox.order.application.dto.result.OrderLineResult;
 import kr.magicbox.order.application.port.in.CreateReleaseOrderUseCase;
 import kr.magicbox.order.application.port.out.OrderOutboxPort;
 import kr.magicbox.order.application.port.out.OrderRepositoryPort;
@@ -25,18 +27,18 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
     private final OrderOutboxPort orderOutboxPort;
 
     @Override
-    public void createReleaseOrder(CreateReleaseOrderCommand command) {
+    public CreateOrderResult createReleaseOrder(CreateReleaseOrderCommand command) {
         boolean valid = purchaseTokenValidationPort.validate(
                 command.releaseId(), command.customerId(), command.purchaseToken());
         if (!valid) {
             throw new InvalidPurchaseTokenException();
         }
 
-        saveOrderWithOutbox(command);
+        return saveOrderWithOutbox(command);
     }
 
     @Transactional
-    protected void saveOrderWithOutbox(CreateReleaseOrderCommand command) {
+    protected CreateOrderResult saveOrderWithOutbox(CreateReleaseOrderCommand command) {
         OrderLine orderLine = OrderLine.createBuilder()
                 .productId(command.releaseId())
                 .sellerId(command.sellerId())
@@ -56,5 +58,19 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
         Long savedOrderId = orderRepositoryPort.save(order);
         orderOutboxPort.save(OrderPrepareEvent.from(savedOrderId, order));
         orderOutboxPort.save(ReleaseSoldQuantityIncreaseEvent.of(command.releaseId()));
+
+        OrderLineResult orderLineResult = OrderLineResult.builder()
+                .productId(command.releaseId())
+                .productName(command.productName())
+                .quantity(1)
+                .unitPrice(command.unitPrice())
+                .build();
+
+        return CreateOrderResult.builder()
+                .orderId(savedOrderId)
+                .sellerId(command.sellerId())
+                .totalAmount(command.unitPrice())
+                .orderLines(List.of(orderLineResult))
+                .build();
     }
 }
