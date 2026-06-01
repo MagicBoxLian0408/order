@@ -25,4 +25,8 @@ public class OrderOutboxEntity extends BaseEntity {
         this.eventType = eventType;
         this.payload = payload;
     }
+
+    public void updatePayload(String payload) {
+        this.payload = payload;
+    }
 }
