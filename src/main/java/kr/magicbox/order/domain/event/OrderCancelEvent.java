@@ -8,6 +8,7 @@ import java.time.Instant;
 
 @Builder
 public record OrderCancelEvent(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("reason") String reason,
@@ -17,8 +18,10 @@ public record OrderCancelEvent(
 
     public static OrderCancelEvent from(Order order, String reason) {
         Instant now = Instant.now();
+        Long orderId = order.getId().value();
         return OrderCancelEvent.builder()
-                .orderId(order.getId().value())
+                .eventId(orderId)
+                .orderId(orderId)
                 .customerId(order.getCustomerId())
                 .reason(reason)
                 .requestedAt(now)

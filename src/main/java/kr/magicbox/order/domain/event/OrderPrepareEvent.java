@@ -10,6 +10,7 @@ import java.util.List;
 
 @Builder
 public record OrderPrepareEvent(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("seller_id") Long sellerId,
@@ -39,6 +40,7 @@ public record OrderPrepareEvent(
                 .build();
 
         return OrderPrepareEvent.builder()
+                .eventId(savedOrderId)
                 .orderId(savedOrderId)
                 .customerId(order.getCustomerId())
                 .sellerId(order.getSellerId())

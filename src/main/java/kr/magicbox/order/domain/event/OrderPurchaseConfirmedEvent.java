@@ -10,6 +10,7 @@ import java.util.List;
 
 @Builder
 public record OrderPurchaseConfirmedEvent(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("order_line_id") Long orderLineId,
@@ -19,10 +20,12 @@ public record OrderPurchaseConfirmedEvent(
 ) implements OrderDomainEvent {
 
     public static OrderPurchaseConfirmedEvent from(Order order, OrderLine line, Instant now) {
+        Long orderLineId = line.getId().value();
         return OrderPurchaseConfirmedEvent.builder()
+                .eventId(orderLineId)
                 .orderId(order.getId().value())
                 .customerId(order.getCustomerId())
-                .orderLineId(line.getId().value())
+                .orderLineId(orderLineId)
                 .sellerId(line.getSellerId())
                 .grossAmount(line.lineTotal())
                 .occurredAt(now)
