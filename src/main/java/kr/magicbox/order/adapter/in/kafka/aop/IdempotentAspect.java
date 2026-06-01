@@ -31,9 +31,16 @@ public class IdempotentAspect {
     @Around("@annotation(kr.magicbox.order.adapter.in.kafka.annotation.Idempotent)")
     public Object around(ProceedingJoinPoint pjp) {
         ConsumerRecord<String, ?> consumerRecord = extractRecord(pjp);
-        InboxEvent event = (InboxEvent) consumerRecord.value();
-        Long eventId = event.eventId();
-        Instant occurredAt = event.occurredAt();
+        Long eventId;
+        Instant occurredAt;
+        if (consumerRecord.value() instanceof InboxEvent event) {
+            eventId = event.eventId();
+            occurredAt = event.occurredAt();
+        } else {
+            // Debezium CDC 메시지: value가 String이므로 key(outbox id)를 eventId로 사용
+            eventId = Long.parseLong(consumerRecord.key());
+            occurredAt = Instant.now();
+        }
 
         if (isTooOld(occurredAt)) {
             log.warn("[Inbox] 만료된 메시지 DEAD_LETTERED 처리. eventId={}, occurredAt={}", eventId, occurredAt);
