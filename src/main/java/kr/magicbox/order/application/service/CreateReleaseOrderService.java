@@ -57,7 +57,7 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
 
         Order savedOrder = orderRepositoryPort.save(order);
         Long savedOrderId = savedOrder.getId().value();
-        orderOutboxPort.save(OrderPrepareEvent.from(savedOrderId, savedOrder));
+        orderOutboxPort.save(OrderPrepareEvent.from(savedOrder));
         orderOutboxPort.save(ReleaseSoldQuantityIncreaseEvent.of(command.releaseId()));
 
         OrderLineResult orderLineResult = savedOrder.getOrderLines().stream()
