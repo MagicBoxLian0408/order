@@ -31,10 +31,9 @@ public class OrderJpaAdapter implements OrderRepositoryPort {
     @Override
     public Order save(Order order) {
         OrderEntity orderEntity = orderJpaRepository.save(orderMapper.toEntity(order));
-        order.getOrderLines().forEach(line ->
-                orderLineJpaRepository.save(orderMapper.toLineEntity(orderEntity.getId(), line))
-        );
-        List<OrderLineEntity> savedLineEntities = orderLineJpaRepository.findByOrderId(orderEntity.getId());
+        List<OrderLineEntity> savedLineEntities = order.getOrderLines().stream()
+                .map(line -> orderLineJpaRepository.save(orderMapper.toLineEntity(orderEntity.getId(), line)))
+                .toList();
         return orderMapper.toDomain(orderEntity, savedLineEntities);
     }
 
