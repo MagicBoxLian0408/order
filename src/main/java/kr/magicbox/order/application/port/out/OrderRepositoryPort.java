@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 
 public interface OrderRepositoryPort {
-    Long save(Order order);
+    Order save(Order order);
     void update(Order order);
     Order findById(OrderId id);
     Order findByOrderLineId(Long orderLineId);
