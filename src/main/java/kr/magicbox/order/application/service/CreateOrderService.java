@@ -43,15 +43,17 @@ public class CreateOrderService implements CreateOrderUseCase {
                 .orderLines(orderLines)
                 .build();
 
-        Long savedOrderId = orderRepositoryPort.save(order);
-        orderOutboxPort.save(OrderPrepareEvent.from(savedOrderId, order));
+        Order savedOrder = orderRepositoryPort.save(order);
+        Long savedOrderId = savedOrder.getId().value();
+        orderOutboxPort.save(OrderPrepareEvent.from(savedOrder));
 
-        List<OrderLineResult> orderLineResults = command.orderLines().stream()
+        List<OrderLineResult> orderLineResults = savedOrder.getOrderLines().stream()
                 .map(line -> OrderLineResult.builder()
-                        .productId(line.productId())
-                        .productName(line.productName())
-                        .quantity(line.quantity())
-                        .unitPrice(line.unitPrice())
+                        .orderLineId(line.getId().value())
+                        .productId(line.getProductId())
+                        .productName(line.getProductName())
+                        .quantity(line.getQuantity())
+                        .unitPrice(line.getUnitPrice())
                         .build())
                 .toList();
 

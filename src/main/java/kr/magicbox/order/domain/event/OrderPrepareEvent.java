@@ -20,7 +20,8 @@ public record OrderPrepareEvent(
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements OrderDomainEvent {
 
-    public static OrderPrepareEvent from(Long savedOrderId, Order order) {
+    public static OrderPrepareEvent from(Order order) {
+        Long orderId = order.getId().value();
         List<OrderItemPayload> items = order.getOrderLines().stream()
                 .map(line -> OrderItemPayload.builder()
                         .productId(line.getProductId())
@@ -40,8 +41,8 @@ public record OrderPrepareEvent(
                 .build();
 
         return OrderPrepareEvent.builder()
-                .eventId(savedOrderId)
-                .orderId(savedOrderId)
+                .eventId(orderId)
+                .orderId(orderId)
                 .customerId(order.getCustomerId())
                 .sellerId(order.getSellerId())
                 .items(items)
