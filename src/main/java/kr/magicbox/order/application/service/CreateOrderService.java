@@ -9,6 +9,7 @@ import kr.magicbox.order.application.port.out.OrderRepositoryPort;
 import kr.magicbox.order.domain.aggregate.Order;
 import kr.magicbox.order.domain.aggregate.OrderLine;
 import kr.magicbox.order.domain.event.OrderPrepareEvent;
+import kr.magicbox.order.domain.vo.OrderId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,14 +45,16 @@ public class CreateOrderService implements CreateOrderUseCase {
                 .build();
 
         Long savedOrderId = orderRepositoryPort.save(order);
-        orderOutboxPort.save(OrderPrepareEvent.from(savedOrderId, order));
+        Order savedOrder = orderRepositoryPort.findById(OrderId.of(savedOrderId));
+        orderOutboxPort.save(OrderPrepareEvent.from(savedOrderId, savedOrder));
 
-        List<OrderLineResult> orderLineResults = command.orderLines().stream()
+        List<OrderLineResult> orderLineResults = savedOrder.getOrderLines().stream()
                 .map(line -> OrderLineResult.builder()
-                        .productId(line.productId())
-                        .productName(line.productName())
-                        .quantity(line.quantity())
-                        .unitPrice(line.unitPrice())
+                        .orderLineId(line.getId().value())
+                        .productId(line.getProductId())
+                        .productName(line.getProductName())
+                        .quantity(line.getQuantity())
+                        .unitPrice(line.getUnitPrice())
                         .build())
                 .toList();
 
