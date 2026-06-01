@@ -8,6 +8,7 @@ import java.time.Instant;
 
 @Builder
 public record OrderDeliveredEvent(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("delivered_at") Instant deliveredAt,
@@ -16,8 +17,10 @@ public record OrderDeliveredEvent(
 
     public static OrderDeliveredEvent from(Order order) {
         Instant now = Instant.now();
+        Long orderId = order.getId().value();
         return OrderDeliveredEvent.builder()
-                .orderId(order.getId().value())
+                .eventId(orderId)
+                .orderId(orderId)
                 .customerId(order.getCustomerId())
                 .deliveredAt(now)
                 .occurredAt(now)

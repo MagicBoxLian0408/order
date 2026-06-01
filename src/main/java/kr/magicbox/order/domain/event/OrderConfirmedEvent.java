@@ -8,6 +8,7 @@ import java.time.Instant;
 
 @Builder
 public record OrderConfirmedEvent(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("seller_id") Long sellerId,
@@ -17,8 +18,10 @@ public record OrderConfirmedEvent(
 
     public static OrderConfirmedEvent from(Order order) {
         Instant now = Instant.now();
+        Long orderId = order.getId().value();
         return OrderConfirmedEvent.builder()
-                .orderId(order.getId().value())
+                .eventId(orderId)
+                .orderId(orderId)
                 .customerId(order.getCustomerId())
                 .sellerId(order.getSellerId())
                 .confirmedAt(now)
