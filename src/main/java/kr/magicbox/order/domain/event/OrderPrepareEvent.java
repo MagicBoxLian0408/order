@@ -24,6 +24,7 @@ public record OrderPrepareEvent(
         Long orderId = order.getId().value();
         List<OrderItemPayload> items = order.getOrderLines().stream()
                 .map(line -> OrderItemPayload.builder()
+                        .orderLineId(line.getId().value())
                         .productId(line.getProductId())
                         .quantity(line.getQuantity())
                         .unitPrice(line.getUnitPrice())
@@ -64,6 +65,7 @@ public record OrderPrepareEvent(
 
     @Builder
     public record OrderItemPayload(
+            @JsonProperty("order_line_id") Long orderLineId,
             @JsonProperty("product_id") Long productId,
             @JsonProperty("quantity") int quantity,
             @JsonProperty("unit_price") long unitPrice,
