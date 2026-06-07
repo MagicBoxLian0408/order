@@ -22,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/order")
 @RequiredArgsConstructor
 @Validated
 public class OrderCommandController {

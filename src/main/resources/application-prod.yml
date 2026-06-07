@@ -45,10 +45,6 @@ spring:
       ddl-auto: validate
     open-in-view: false
 
-security:
-  trusted:
-    ips:
-      - ${TRUSTED_IP_GATEWAY}
 
 resilience4j:
   circuitbreaker:
