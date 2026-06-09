@@ -11,5 +11,6 @@ public record CreateReleaseOrderCommand(
         String purchaseToken,
         String productName,
         Long unitPrice,
+        String thumbnailUrl,
         ShippingAddress shippingAddress
 ) {}

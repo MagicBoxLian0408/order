@@ -21,6 +21,7 @@ public record CreateOrderCommand(
             String productName,
             Integer quantity,
             Long unitPrice,
-            ProductType productType
+            ProductType productType,
+            String thumbnailUrl
     ) {}
 }

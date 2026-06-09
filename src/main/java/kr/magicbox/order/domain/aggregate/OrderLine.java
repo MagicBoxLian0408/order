@@ -19,10 +19,11 @@ public class OrderLine {
     private final Integer quantity;
     private final Long unitPrice;
     private final ProductType productType;
+    private final String thumbnailUrl;
     private OrderLineDeliveryStatus deliveryStatus;
 
     @Builder(builderMethodName = "createBuilder", builderClassName = "CreateBuilder")
-    public OrderLine(Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, ProductType productType) {
+    public OrderLine(Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, ProductType productType, String thumbnailUrl) {
         validateCreate(productId, quantity, unitPrice);
         this.id = null;
         this.productId = productId;
@@ -31,12 +32,13 @@ public class OrderLine {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.productType = productType;
+        this.thumbnailUrl = thumbnailUrl;
         this.deliveryStatus = OrderLineDeliveryStatus.PENDING;
     }
 
     @Builder(builderMethodName = "reconstructBuilder", builderClassName = "ReconstructBuilder")
     public OrderLine(OrderLineId id, Long productId, Long sellerId, String productName,
-                     Integer quantity, Long unitPrice, ProductType productType, OrderLineDeliveryStatus deliveryStatus) {
+                     Integer quantity, Long unitPrice, ProductType productType, String thumbnailUrl, OrderLineDeliveryStatus deliveryStatus) {
         validateReconstruct(id, productId, sellerId, productName, quantity, unitPrice, deliveryStatus);
         this.id = id;
         this.productId = productId;
@@ -45,6 +47,7 @@ public class OrderLine {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.productType = productType;
+        this.thumbnailUrl = thumbnailUrl;
         this.deliveryStatus = deliveryStatus;
     }
 
