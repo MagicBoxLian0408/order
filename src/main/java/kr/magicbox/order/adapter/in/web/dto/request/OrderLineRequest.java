@@ -12,5 +12,6 @@ public record OrderLineRequest(
         @NotBlank(message = "상품명은 필수입니다.") String productName,
         @NotNull(message = "수량은 필수입니다.") @Min(value = 1, message = "수량은 1 이상이어야 합니다.") Integer quantity,
         @NotNull(message = "단가는 필수입니다.") @Min(value = 0, message = "단가는 0 이상이어야 합니다.") Long unitPrice,
-        @NotNull(message = "상품 타입은 필수입니다.") ProductType productType
+        @NotNull(message = "상품 타입은 필수입니다.") ProductType productType,
+        String thumbnailUrl
 ) {}

@@ -47,6 +47,7 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
                 .quantity(1)
                 .unitPrice(command.unitPrice())
                 .productType(ProductType.RELEASE)
+                .thumbnailUrl(command.thumbnailUrl())
                 .build();
 
         Order order = Order.createBuilder()
@@ -70,6 +71,7 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
                         .productName(line.getProductName())
                         .quantity(line.getQuantity())
                         .unitPrice(line.getUnitPrice())
+                        .thumbnailUrl(line.getThumbnailUrl())
                         .build())
                 .orElseThrow();
 

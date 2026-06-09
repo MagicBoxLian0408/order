@@ -44,8 +44,11 @@ public class OrderLineEntity extends BaseEntity {
     @Column(name = "product_type", nullable = false)
     private ProductType productType;
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
     @Builder
-    public OrderLineEntity(Long orderId, Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, OrderLineDeliveryStatus deliveryStatus, ProductType productType) {
+    public OrderLineEntity(Long orderId, Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, OrderLineDeliveryStatus deliveryStatus, ProductType productType, String thumbnailUrl) {
         this.orderId = orderId;
         this.productId = productId;
         this.sellerId = sellerId;
@@ -54,6 +57,7 @@ public class OrderLineEntity extends BaseEntity {
         this.unitPrice = unitPrice;
         this.deliveryStatus = deliveryStatus != null ? deliveryStatus : OrderLineDeliveryStatus.PENDING;
         this.productType = productType;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public void updateDeliveryStatus(OrderLineDeliveryStatus deliveryStatus) {

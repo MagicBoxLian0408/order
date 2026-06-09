@@ -8,5 +8,6 @@ public record OrderLineResult(
         Long productId,
         String productName,
         int quantity,
-        long unitPrice
+        long unitPrice,
+        String thumbnailUrl
 ) {}

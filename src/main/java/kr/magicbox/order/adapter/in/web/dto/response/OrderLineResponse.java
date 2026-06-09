@@ -9,7 +9,8 @@ public record OrderLineResponse(
         Long productId,
         String productName,
         int quantity,
-        long unitPrice
+        long unitPrice,
+        String thumbnailUrl
 ) {
     public static OrderLineResponse from(OrderLineResult result) {
         return OrderLineResponse.builder()
@@ -18,6 +19,7 @@ public record OrderLineResponse(
                 .productName(result.productName())
                 .quantity(result.quantity())
                 .unitPrice(result.unitPrice())
+                .thumbnailUrl(result.thumbnailUrl())
                 .build();
     }
 }

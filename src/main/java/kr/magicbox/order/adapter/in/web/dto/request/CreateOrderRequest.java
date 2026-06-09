@@ -23,6 +23,7 @@ public record CreateOrderRequest(
                         .quantity(line.quantity())
                         .unitPrice(line.unitPrice())
                         .productType(line.productType())
+                        .thumbnailUrl(line.thumbnailUrl())
                         .build())
                 .toList();
 

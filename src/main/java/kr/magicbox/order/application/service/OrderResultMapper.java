@@ -19,6 +19,7 @@ public class OrderResultMapper {
                         .productName(line.getProductName())
                         .quantity(line.getQuantity())
                         .unitPrice(line.getUnitPrice())
+                        .thumbnailUrl(line.getThumbnailUrl())
                         .build())
                 .toList();
 

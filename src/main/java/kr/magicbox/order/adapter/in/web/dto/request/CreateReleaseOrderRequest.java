@@ -12,6 +12,7 @@ public record CreateReleaseOrderRequest(
         @NotBlank(message = "구매 토큰은 필수입니다.") String purchaseToken,
         @NotBlank(message = "상품명은 필수입니다.") String productName,
         @NotNull(message = "단가는 필수입니다.") @Positive(message = "단가는 양수여야 합니다.") Long unitPrice,
+        String thumbnailUrl,
         @Valid @NotNull(message = "배송지 정보는 필수입니다.") ShippingAddressRequest shippingAddress
 ) {
     public CreateReleaseOrderCommand toCommand(Long customerId) {
@@ -22,6 +23,7 @@ public record CreateReleaseOrderRequest(
                 .purchaseToken(purchaseToken)
                 .productName(productName)
                 .unitPrice(unitPrice)
+                .thumbnailUrl(thumbnailUrl)
                 .shippingAddress(shippingAddress.toDomain())
                 .build();
     }

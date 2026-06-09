@@ -33,6 +33,7 @@ public class CreateOrderService implements CreateOrderUseCase {
                         .quantity(line.quantity())
                         .unitPrice(line.unitPrice())
                         .productType(line.productType())
+                        .thumbnailUrl(line.thumbnailUrl())
                         .build())
                 .toList();
 
@@ -55,6 +56,7 @@ public class CreateOrderService implements CreateOrderUseCase {
                         .productName(line.getProductName())
                         .quantity(line.getQuantity())
                         .unitPrice(line.getUnitPrice())
+                        .thumbnailUrl(line.getThumbnailUrl())
                         .build())
                 .toList();
 
