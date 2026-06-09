@@ -9,6 +9,7 @@ import kr.magicbox.order.application.port.out.OrderRepositoryPort;
 import kr.magicbox.order.application.port.out.PurchaseTokenValidationPort;
 import kr.magicbox.order.domain.aggregate.Order;
 import kr.magicbox.order.domain.aggregate.OrderLine;
+import kr.magicbox.order.domain.enums.ProductType;
 import kr.magicbox.order.domain.event.OrderPrepareEvent;
 import kr.magicbox.order.domain.event.ReleaseSoldQuantityIncreaseEvent;
 import kr.magicbox.order.domain.exception.InvalidPurchaseTokenException;
@@ -45,6 +46,7 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
                 .productName(command.productName())
                 .quantity(1)
                 .unitPrice(command.unitPrice())
+                .productType(ProductType.RELEASE)
                 .build();
 
         Order order = Order.createBuilder()

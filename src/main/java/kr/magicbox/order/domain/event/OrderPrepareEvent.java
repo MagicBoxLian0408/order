@@ -2,6 +2,7 @@ package kr.magicbox.order.domain.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.magicbox.order.domain.aggregate.Order;
+import kr.magicbox.order.domain.enums.ProductType;
 import kr.magicbox.order.domain.vo.ShippingAddress;
 import lombok.Builder;
 
@@ -29,6 +30,7 @@ public record OrderPrepareEvent(
                         .quantity(line.getQuantity())
                         .unitPrice(line.getUnitPrice())
                         .productName(line.getProductName())
+                        .productType(line.getProductType())
                         .build())
                 .toList();
 
@@ -69,7 +71,8 @@ public record OrderPrepareEvent(
             @JsonProperty("product_id") Long productId,
             @JsonProperty("quantity") int quantity,
             @JsonProperty("unit_price") long unitPrice,
-            @JsonProperty("product_name") String productName
+            @JsonProperty("product_name") String productName,
+            @JsonProperty("product_type") ProductType productType
     ) {}
 
     @Builder

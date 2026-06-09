@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import kr.magicbox.order.domain.enums.OrderLineDeliveryStatus;
+import kr.magicbox.order.domain.enums.ProductType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,8 +40,12 @@ public class OrderLineEntity extends BaseEntity {
     @Column(name = "delivery_status", nullable = false)
     private OrderLineDeliveryStatus deliveryStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_type", nullable = false)
+    private ProductType productType;
+
     @Builder
-    public OrderLineEntity(Long orderId, Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, OrderLineDeliveryStatus deliveryStatus) {
+    public OrderLineEntity(Long orderId, Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, OrderLineDeliveryStatus deliveryStatus, ProductType productType) {
         this.orderId = orderId;
         this.productId = productId;
         this.sellerId = sellerId;
@@ -48,6 +53,7 @@ public class OrderLineEntity extends BaseEntity {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.deliveryStatus = deliveryStatus != null ? deliveryStatus : OrderLineDeliveryStatus.PENDING;
+        this.productType = productType;
     }
 
     public void updateDeliveryStatus(OrderLineDeliveryStatus deliveryStatus) {

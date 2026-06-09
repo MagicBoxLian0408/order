@@ -38,6 +38,7 @@ public class OrderMapper {
                 .quantity(domain.getQuantity())
                 .unitPrice(domain.getUnitPrice())
                 .deliveryStatus(domain.getDeliveryStatus())
+                .productType(domain.getProductType())
                 .build();
     }
 
@@ -74,6 +75,7 @@ public class OrderMapper {
                 .quantity(entity.getQuantity())
                 .unitPrice(entity.getUnitPrice())
                 .deliveryStatus(entity.getDeliveryStatus())
+                .productType(entity.getProductType())
                 .build();
     }
 }
