@@ -22,6 +22,7 @@ public record CreateOrderRequest(
                         .productName(line.productName())
                         .quantity(line.quantity())
                         .unitPrice(line.unitPrice())
+                        .productType(line.productType())
                         .build())
                 .toList();
 

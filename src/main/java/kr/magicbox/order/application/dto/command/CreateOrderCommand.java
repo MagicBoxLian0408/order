@@ -1,5 +1,6 @@
 package kr.magicbox.order.application.dto.command;
 
+import kr.magicbox.order.domain.enums.ProductType;
 import kr.magicbox.order.domain.vo.ShippingAddress;
 import lombok.Builder;
 
@@ -19,6 +20,7 @@ public record CreateOrderCommand(
             Long sellerId,
             String productName,
             Integer quantity,
-            Long unitPrice
+            Long unitPrice,
+            ProductType productType
     ) {}
 }

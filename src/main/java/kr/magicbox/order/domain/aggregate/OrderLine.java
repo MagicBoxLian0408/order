@@ -1,6 +1,7 @@
 package kr.magicbox.order.domain.aggregate;
 
 import kr.magicbox.order.domain.enums.OrderLineDeliveryStatus;
+import kr.magicbox.order.domain.enums.ProductType;
 import kr.magicbox.order.domain.exception.InvalidFieldException;
 import kr.magicbox.order.domain.exception.OrderLineComplainNotAllowedException;
 import kr.magicbox.order.domain.exception.OrderStatusConflictException;
@@ -17,10 +18,11 @@ public class OrderLine {
     private final String productName;
     private final Integer quantity;
     private final Long unitPrice;
+    private final ProductType productType;
     private OrderLineDeliveryStatus deliveryStatus;
 
     @Builder(builderMethodName = "createBuilder", builderClassName = "CreateBuilder")
-    public OrderLine(Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice) {
+    public OrderLine(Long productId, Long sellerId, String productName, Integer quantity, Long unitPrice, ProductType productType) {
         validateCreate(productId, quantity, unitPrice);
         this.id = null;
         this.productId = productId;
@@ -28,12 +30,13 @@ public class OrderLine {
         this.productName = productName;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.productType = productType;
         this.deliveryStatus = OrderLineDeliveryStatus.PENDING;
     }
 
     @Builder(builderMethodName = "reconstructBuilder", builderClassName = "ReconstructBuilder")
     public OrderLine(OrderLineId id, Long productId, Long sellerId, String productName,
-                     Integer quantity, Long unitPrice, OrderLineDeliveryStatus deliveryStatus) {
+                     Integer quantity, Long unitPrice, ProductType productType, OrderLineDeliveryStatus deliveryStatus) {
         validateReconstruct(id, productId, sellerId, productName, quantity, unitPrice, deliveryStatus);
         this.id = id;
         this.productId = productId;
@@ -41,6 +44,7 @@ public class OrderLine {
         this.productName = productName;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+        this.productType = productType;
         this.deliveryStatus = deliveryStatus;
     }
 
