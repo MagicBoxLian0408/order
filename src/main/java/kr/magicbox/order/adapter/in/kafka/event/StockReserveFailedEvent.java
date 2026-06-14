@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.util.List;
 
 public record StockReserveFailedEvent(
-        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("reason") String reason,
