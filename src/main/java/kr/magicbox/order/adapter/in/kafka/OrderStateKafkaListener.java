@@ -26,4 +26,5 @@ public class OrderStateKafkaListener {
         log.info("[Inbox] order.prepare 이벤트 수신. eventId={}", consumerRecord.key());
         handleOrderPrepareUseCase.handleOrderPrepare(consumerRecord.value().orderId());
     }
+
 }
