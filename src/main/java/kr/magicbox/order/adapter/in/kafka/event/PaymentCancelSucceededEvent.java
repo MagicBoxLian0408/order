@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.util.List;
 
 public record PaymentCancelSucceededEvent(
-        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("pg_transaction_id") String pgTransactionId,

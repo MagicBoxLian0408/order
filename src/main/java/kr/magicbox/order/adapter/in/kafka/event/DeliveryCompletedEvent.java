@@ -6,7 +6,6 @@ import java.time.Instant;
 import java.util.List;
 
 public record DeliveryCompletedEvent(
-        @JsonProperty("event_id") Long eventId,
         @JsonProperty("order_id") Long orderId,
         @JsonProperty("order_line_id") Long orderLineId,
         @JsonProperty("customer_id") Long customerId,

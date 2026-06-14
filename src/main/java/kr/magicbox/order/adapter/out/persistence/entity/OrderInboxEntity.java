@@ -14,8 +14,8 @@ import java.time.Instant;
 @Table(name = "order_inbox")
 public class OrderInboxEntity extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
-    private Long eventId;
+    @Column(name = "event_key", nullable = false, unique = true)
+    private String eventKey;
 
     @Column(nullable = false)
     private String topic;
@@ -34,8 +34,8 @@ public class OrderInboxEntity extends BaseEntity {
     private Instant occurredAt;
 
     @Builder
-    public OrderInboxEntity(Long eventId, String topic, Integer partition, Long offset, OrderInboxStatus status, Instant occurredAt) {
-        this.eventId = eventId;
+    public OrderInboxEntity(String eventKey, String topic, Integer partition, Long offset, OrderInboxStatus status, Instant occurredAt) {
+        this.eventKey = eventKey;
         this.topic = topic;
         this.partition = partition;
         this.offset = offset;
