@@ -1,7 +1,7 @@
 package kr.magicbox.order.adapter.in.kafka;
 
 import kr.magicbox.order.adapter.in.kafka.annotation.Idempotent;
-import kr.magicbox.order.adapter.in.kafka.event.OrderPrepareEventDto;
+import kr.magicbox.order.adapter.in.kafka.event.OrderPrepareConfirmedEvent;
 import kr.magicbox.order.application.port.in.HandleOrderPrepareUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Component;
-import kr.magicbox.order.global.exception.BusinessException;
 
 @Slf4j
 @Component
@@ -21,9 +20,9 @@ public class OrderStateKafkaListener {
 
     @Idempotent
     @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {kr.magicbox.order.global.exception.BusinessException.class})
-    @KafkaListener(topics = "outbox.event.order-prepare", groupId = "order-service")
-    public void handleOrderPrepare(ConsumerRecord<String, OrderPrepareEventDto> consumerRecord) {
-        log.info("[Inbox] order.prepare 이벤트 수신. eventId={}", consumerRecord.key());
+    @KafkaListener(topics = "outbox.event.order-prepare-confirmed", groupId = "order-service")
+    public void handleOrderPrepareConfirmed(ConsumerRecord<String, OrderPrepareConfirmedEvent> consumerRecord) {
+        log.info("[Inbox] order.prepare.confirmed 이벤트 수신. orderId={}", consumerRecord.value().orderId());
         handleOrderPrepareUseCase.handleOrderPrepare(consumerRecord.value().orderId());
     }
 
