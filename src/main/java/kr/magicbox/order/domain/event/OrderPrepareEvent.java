@@ -16,7 +16,7 @@ public record OrderPrepareEvent(
         @JsonProperty("customer_id") Long customerId,
         @JsonProperty("seller_id") Long sellerId,
         @JsonProperty("items") List<OrderItemPayload> items,
-        @JsonProperty("total_amount") long totalAmount,
+        @JsonProperty("total_amount") Long totalAmount,
         @JsonProperty("shipping_address") ShippingAddressPayload shippingAddress,
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements OrderDomainEvent {
@@ -69,8 +69,8 @@ public record OrderPrepareEvent(
     public record OrderItemPayload(
             @JsonProperty("order_line_id") Long orderLineId,
             @JsonProperty("product_id") Long productId,
-            @JsonProperty("quantity") int quantity,
-            @JsonProperty("unit_price") long unitPrice,
+            @JsonProperty("quantity") Integer quantity,
+            @JsonProperty("unit_price") Long unitPrice,
             @JsonProperty("product_name") String productName,
             @JsonProperty("product_type") ProductType productType
     ) {}
