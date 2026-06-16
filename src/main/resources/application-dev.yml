@@ -26,6 +26,7 @@ spring:
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
         spring.json.trusted.packages: "kr.magicbox.order.adapter.in.kafka.event"
         spring.json.type.mapping: order-prepare-confirmed:kr.magicbox.order.adapter.in.kafka.event.OrderPrepareConfirmedEvent,delivery-started:kr.magicbox.order.adapter.in.kafka.event.DeliveryStartedEvent,delivery-completed:kr.magicbox.order.adapter.in.kafka.event.DeliveryCompletedEvent,payment-succeeded:kr.magicbox.order.adapter.in.kafka.event.PaymentSucceededEvent,payment-failed:kr.magicbox.order.adapter.in.kafka.event.PaymentFailedEvent,payment-cancel-succeeded:kr.magicbox.order.adapter.in.kafka.event.PaymentCancelSucceededEvent,payment-cancel-failed:kr.magicbox.order.adapter.in.kafka.event.PaymentCancelFailedEvent,stock-reserve-succeeded:kr.magicbox.order.adapter.in.kafka.event.StockReserveSucceededEvent,stock-reserve-failed:kr.magicbox.order.adapter.in.kafka.event.StockReserveFailedEvent
+        spring.json.use.type.headers: false
     retry:
       topic:
         attempts: 3
