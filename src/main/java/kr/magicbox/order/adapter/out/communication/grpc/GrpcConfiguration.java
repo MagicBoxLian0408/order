@@ -14,4 +14,9 @@ public class GrpcConfiguration {
         return grpcChannelFactory.createChannel(ServiceHost.WAITING.getHostName());
     }
 
+    @Bean
+    public ManagedChannel creatorManagedChannel(GrpcChannelFactory grpcChannelFactory) {
+        return grpcChannelFactory.createChannel(ServiceHost.CREATOR.getHostName());
+    }
+
 }

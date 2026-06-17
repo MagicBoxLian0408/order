@@ -9,6 +9,9 @@ spring:
         waiting-service:
           address: ${WAITING_SERVICE_URL}
           negotiation-type: plaintext
+        creator-service:
+          address: ${CREATOR_SERVICE_URL}
+          negotiation-type: plaintext
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     listener:
@@ -58,9 +61,17 @@ resilience4j:
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
         minimumNumberOfCalls: 10
+      creatorService:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 20
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 10
   timelimiter:
     instances:
       waitingService:
+        timeoutDuration: 2s
+      creatorService:
         timeoutDuration: 2s
 
 inbox:

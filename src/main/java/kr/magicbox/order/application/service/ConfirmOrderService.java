@@ -4,6 +4,7 @@ import kr.magicbox.order.application.dto.command.ConfirmOrderCommand;
 import kr.magicbox.order.application.port.in.ConfirmOrderUseCase;
 import kr.magicbox.order.application.port.out.OrderOutboxPort;
 import kr.magicbox.order.application.port.out.OrderRepositoryPort;
+import kr.magicbox.order.application.port.out.SellerIdQueryPort;
 import kr.magicbox.order.domain.aggregate.Order;
 import kr.magicbox.order.domain.event.OrderConfirmedEvent;
 import kr.magicbox.order.domain.exception.OrderUnauthorizedException;
@@ -18,13 +19,15 @@ public class ConfirmOrderService implements ConfirmOrderUseCase {
 
     private final OrderRepositoryPort orderRepositoryPort;
     private final OrderOutboxPort orderOutboxPort;
+    private final SellerIdQueryPort sellerIdQueryPort;
 
     @Transactional
     @Override
     public void confirmOrder(ConfirmOrderCommand command) {
         Order order = orderRepositoryPort.findById(OrderId.of(command.orderId()));
 
-        if (!order.getSellerId().equals(command.sellerId())) {
+        Long creatorId = sellerIdQueryPort.getSellerId(command.sellerId());
+        if (!order.getSellerId().equals(creatorId)) {
             throw new OrderUnauthorizedException();
         }
 
