@@ -3,8 +3,8 @@ package kr.magicbox.order.application.service;
 import kr.magicbox.order.application.dto.query.GetOrderListQuery;
 import kr.magicbox.order.application.dto.result.OrderResult;
 import kr.magicbox.order.application.port.in.GetOrderListUseCase;
-import kr.magicbox.order.application.port.out.OrderRepositoryPort;
-import kr.magicbox.order.domain.aggregate.Order;
+import kr.magicbox.order.application.service.strategy.OrderQueryStrategy;
+import kr.magicbox.order.domain.exception.InvalidFieldException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,21 +15,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetOrderListService implements GetOrderListUseCase {
 
-    private final OrderRepositoryPort orderRepositoryPort;
-    private final OrderResultMapper orderResultMapper;
+    private final List<OrderQueryStrategy> strategies;
 
     @Transactional(readOnly = true)
     @Override
     public List<OrderResult> getOrderList(GetOrderListQuery query) {
-        if (query.customerId() != null) {
-            List<Order> orders = orderRepositoryPort.findByCustomerId(query.customerId());
-            return orders.stream().map(orderResultMapper::toResult).toList();
-        } else {
-            Long sellerId = query.sellerId();
-            List<Order> orders = orderRepositoryPort.findBySellerId(sellerId);
-            return orders.stream()
-                    .map(order -> orderResultMapper.toResult(order, sellerId))
-                    .toList();
-        }
+        return strategies.stream()
+                .filter(strategy -> strategy.supports(query))
+                .findFirst()
+                .orElseThrow(() -> new InvalidFieldException("조회 조건(customer_id 또는 seller_id)이 필요합니다."))
+                .execute(query);
     }
 }
