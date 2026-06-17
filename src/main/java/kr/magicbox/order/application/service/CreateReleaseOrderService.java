@@ -71,6 +71,7 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
                         .productName(line.getProductName())
                         .quantity(line.getQuantity())
                         .unitPrice(line.getUnitPrice())
+                        .productType(line.getProductType())
                         .thumbnailUrl(line.getThumbnailUrl())
                         .build())
                 .orElseThrow();
