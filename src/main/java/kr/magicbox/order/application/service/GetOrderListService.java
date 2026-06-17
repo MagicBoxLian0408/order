@@ -21,12 +21,15 @@ public class GetOrderListService implements GetOrderListUseCase {
     @Transactional(readOnly = true)
     @Override
     public List<OrderResult> getOrderList(GetOrderListQuery query) {
-        List<Order> orders;
         if (query.customerId() != null) {
-            orders = orderRepositoryPort.findByCustomerId(query.customerId());
+            List<Order> orders = orderRepositoryPort.findByCustomerId(query.customerId());
+            return orders.stream().map(orderResultMapper::toResult).toList();
         } else {
-            orders = orderRepositoryPort.findBySellerId(query.sellerId());
+            Long sellerId = query.sellerId();
+            List<Order> orders = orderRepositoryPort.findBySellerId(sellerId);
+            return orders.stream()
+                    .map(order -> orderResultMapper.toResult(order, sellerId))
+                    .toList();
         }
-        return orders.stream().map(orderResultMapper::toResult).toList();
     }
 }
