@@ -1,5 +1,6 @@
 package kr.magicbox.order.application.dto.result;
 
+import kr.magicbox.order.domain.enums.OrderLineDeliveryStatus;
 import kr.magicbox.order.domain.enums.ProductType;
 import lombok.Builder;
 
@@ -11,5 +12,6 @@ public record OrderLineResult(
         int quantity,
         long unitPrice,
         ProductType productType,
-        String thumbnailUrl
+        String thumbnailUrl,
+        OrderLineDeliveryStatus deliveryStatus
 ) {}
