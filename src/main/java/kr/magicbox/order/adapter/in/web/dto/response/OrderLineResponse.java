@@ -1,6 +1,7 @@
 package kr.magicbox.order.adapter.in.web.dto.response;
 
 import kr.magicbox.order.application.dto.result.OrderLineResult;
+import kr.magicbox.order.domain.enums.OrderLineDeliveryStatus;
 import kr.magicbox.order.domain.enums.ProductType;
 import lombok.Builder;
 
@@ -12,7 +13,8 @@ public record OrderLineResponse(
         int quantity,
         long unitPrice,
         ProductType productType,
-        String thumbnailUrl
+        String thumbnailUrl,
+        OrderLineDeliveryStatus deliveryStatus
 ) {
     public static OrderLineResponse from(OrderLineResult result) {
         return OrderLineResponse.builder()
@@ -23,6 +25,7 @@ public record OrderLineResponse(
                 .unitPrice(result.unitPrice())
                 .productType(result.productType())
                 .thumbnailUrl(result.thumbnailUrl())
+                .deliveryStatus(result.deliveryStatus())
                 .build();
     }
 }
