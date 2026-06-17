@@ -35,8 +35,8 @@ public class OrderQueryController {
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getOrderList(
-            @RequestParam(required = false) Long customerId,
-            @RequestParam(required = false) Long sellerId
+            @RequestParam(value = "customer_id", required = false) Long customerId,
+            @RequestParam(value = "seller_id", required = false) Long sellerId
     ) {
         List<OrderResult> results = getOrderListUseCase.getOrderList(GetOrderListQuery.builder()
                 .customerId(customerId)
