@@ -11,7 +11,6 @@ import kr.magicbox.order.domain.aggregate.Order;
 import kr.magicbox.order.domain.aggregate.OrderLine;
 import kr.magicbox.order.domain.enums.ProductType;
 import kr.magicbox.order.domain.event.OrderPrepareEvent;
-import kr.magicbox.order.domain.event.ReleaseSoldQuantityIncreaseEvent;
 import kr.magicbox.order.domain.exception.InvalidPurchaseTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,7 +60,6 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
         Order savedOrder = orderRepositoryPort.save(order);
         Long savedOrderId = savedOrder.getId().value();
         orderOutboxPort.save(OrderPrepareEvent.from(savedOrder));
-        orderOutboxPort.save(ReleaseSoldQuantityIncreaseEvent.of(command.releaseId()));
 
         OrderLineResult orderLineResult = savedOrder.getOrderLines().stream()
                 .findFirst()
