@@ -11,8 +11,7 @@ public enum OrderDomainEventType {
     ORDER_CANCEL("order-cancel"),
     ORDER_PURCHASE_CONFIRMED("order-purchase-confirmed"),
     ORDER_AUTO_CONFIRMED("order-auto-confirmed"),
-    ORDER_DELIVERED("order-delivered"),
-    RELEASE_SOLD_QUANTITY_INCREASE("release-sold-quantity-increase");
+    ORDER_DELIVERED("order-delivered");
 
     private final String value;
 }
