@@ -1,6 +1,9 @@
 package kr.magicbox.order.adapter.out.communication.grpc;
 
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -14,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
@@ -25,20 +28,21 @@ public class CreatorGrpcAdapter implements SellerIdQueryPort {
 
     @Override
     @CircuitBreaker(name = "creatorService", fallbackMethod = "getSellerIdFallback")
-    public Long getSellerId(Long userId) {
+    @TimeLimiter(name = "creatorService", fallbackMethod = "getSellerIdFallback")
+    public CompletableFuture<Long> getSellerId(Long userId) {
         GetCreatorIdByUserIdRequest request = GetCreatorIdByUserIdRequest.newBuilder()
                 .setUserId(userId)
                 .build();
 
-        CreatorServiceGrpc.CreatorServiceBlockingStub stub = CreatorServiceGrpc.newBlockingStub(creatorManagedChannel)
-                .withDeadlineAfter(2, TimeUnit.SECONDS);
-        GetCreatorIdByUserIdResponse response = stub.getCreatorIdByUserId(request);
+        CreatorServiceGrpc.CreatorServiceFutureStub stub = CreatorServiceGrpc.newFutureStub(creatorManagedChannel);
+        ListenableFuture<GetCreatorIdByUserIdResponse> future = stub.getCreatorIdByUserId(request);
+        GetCreatorIdByUserIdResponse response = Futures.getUnchecked(future);
 
-        return response.getCreatorId();
+        return CompletableFuture.completedFuture(response.getCreatorId());
     }
 
     @SuppressWarnings("unused")
-    private Long getSellerIdFallback(Long userId, Throwable throwable) {
+    private CompletableFuture<Long> getSellerIdFallback(Long userId, Throwable throwable) {
         if (throwable instanceof StatusRuntimeException statusException
                 && statusException.getStatus().getCode() == Status.Code.NOT_FOUND) {
             throw new CreatorNotFoundException();

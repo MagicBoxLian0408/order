@@ -56,23 +56,23 @@ resilience4j:
   circuitbreaker:
     instances:
       waitingService:
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 20
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        minimumNumberOfCalls: 10
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        minimum-number-of-calls: 10
       creatorService:
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 20
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        minimumNumberOfCalls: 10
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        minimum-number-of-calls: 10
   timelimiter:
     instances:
       waitingService:
-        timeoutDuration: 2s
+        timeout-duration: 2s
       creatorService:
-        timeoutDuration: 2s
+        timeout-duration: 2s
 
 inbox:
   max-event-age-minutes: 60
