@@ -17,7 +17,7 @@ public record OrderAutoConfirmedEvent(
         @JsonProperty("seller_id") Long sellerId,
         @JsonProperty("gross_amount") long grossAmount,
         @JsonProperty("occurred_at") Instant occurredAt
-) implements OrderDomainEvent {
+) implements OrderDomainEvent, OrderLineIdAware {
 
     public static OrderAutoConfirmedEvent from(Order order, OrderLine line, Instant now) {
         Long orderLineId = line.getId().value();
