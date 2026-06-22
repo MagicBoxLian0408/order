@@ -5,6 +5,7 @@ import kr.magicbox.order.adapter.out.persistence.entity.OrderOutboxEntity;
 import kr.magicbox.order.adapter.out.persistence.repository.OrderOutboxJpaRepository;
 import kr.magicbox.order.application.port.out.OrderOutboxPort;
 import kr.magicbox.order.domain.event.OrderDomainEvent;
+import kr.magicbox.order.domain.event.OrderLineIdAware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,9 +19,12 @@ public class OrderOutboxAdapter implements OrderOutboxPort {
     @Override
     public void save(OrderDomainEvent event) {
         String payload = objectMapper.writeValueAsString(event);
+        Long orderLineId = event instanceof OrderLineIdAware e ? e.orderLineId() : null;
         orderOutboxJpaRepository.save(OrderOutboxEntity.builder()
                 .eventType(event.eventType().getValue())
                 .payload(payload)
+                .orderId(event.orderId())
+                .orderLineId(orderLineId)
                 .build());
     }
 }
