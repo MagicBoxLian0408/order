@@ -1,7 +1,5 @@
 package kr.magicbox.order.adapter.out.communication.grpc;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import io.grpc.ManagedChannel;
@@ -12,7 +10,6 @@ import kr.magicbox.order.adapter.out.communication.grpc.exception.CreatorService
 import kr.magicbox.order.application.port.out.SellerIdQueryPort;
 import kr.magicbox.order.grpc.creator.CreatorServiceGrpc;
 import kr.magicbox.order.grpc.creator.GetCreatorIdByUserIdRequest;
-import kr.magicbox.order.grpc.creator.GetCreatorIdByUserIdResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,15 +27,11 @@ public class CreatorGrpcAdapter implements SellerIdQueryPort {
     @CircuitBreaker(name = "creatorService", fallbackMethod = "getSellerIdFallback")
     @TimeLimiter(name = "creatorService", fallbackMethod = "getSellerIdFallback")
     public CompletableFuture<Long> getSellerId(Long userId) {
-        GetCreatorIdByUserIdRequest request = GetCreatorIdByUserIdRequest.newBuilder()
-                .setUserId(userId)
-                .build();
-
-        CreatorServiceGrpc.CreatorServiceFutureStub stub = CreatorServiceGrpc.newFutureStub(creatorManagedChannel);
-        ListenableFuture<GetCreatorIdByUserIdResponse> future = stub.getCreatorIdByUserId(request);
-        GetCreatorIdByUserIdResponse response = Futures.getUnchecked(future);
-
-        return CompletableFuture.completedFuture(response.getCreatorId());
+        return GrpcFutures.toCompletable(
+                CreatorServiceGrpc.newFutureStub(creatorManagedChannel).getCreatorIdByUserId(
+                        GetCreatorIdByUserIdRequest.newBuilder().setUserId(userId).build()
+                )
+        ).thenApply(response -> response.getCreatorId());
     }
 
     @SuppressWarnings("unused")
