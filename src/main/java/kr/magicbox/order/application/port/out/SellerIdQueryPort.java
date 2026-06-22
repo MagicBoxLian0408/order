@@ -1,5 +1,7 @@
 package kr.magicbox.order.application.port.out;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface SellerIdQueryPort {
-    Long getSellerId(Long userId);
+    CompletableFuture<Long> getSellerId(Long userId);
 }

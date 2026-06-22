@@ -26,7 +26,7 @@ public class ConfirmOrderService implements ConfirmOrderUseCase {
     public void confirmOrder(ConfirmOrderCommand command) {
         Order order = orderRepositoryPort.findById(OrderId.of(command.orderId()));
 
-        Long creatorId = sellerIdQueryPort.getSellerId(command.sellerId());
+        Long creatorId = sellerIdQueryPort.getSellerId(command.sellerId()).join();
         if (!order.getSellerId().equals(creatorId)) {
             throw new OrderUnauthorizedException();
         }

@@ -29,7 +29,7 @@ public class CreateReleaseOrderService implements CreateReleaseOrderUseCase {
     @Override
     public CreateOrderResult createReleaseOrder(CreateReleaseOrderCommand command) {
         boolean valid = purchaseTokenValidationPort.validate(
-                command.releaseId(), command.customerId(), command.purchaseToken());
+                command.releaseId(), command.customerId(), command.purchaseToken()).join();
         if (!valid) {
             throw new InvalidPurchaseTokenException();
         }
