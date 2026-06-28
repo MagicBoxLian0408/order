@@ -51,11 +51,28 @@ spring:
 server:
   port: ${SERVER_PORT}
 
-security:
-  trusted:
-    ips:
-      - 127.0.0.1
-      - 0:0:0:0:0:0:0:1
 
 inbox:
   max-event-age-minutes: 5
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      waitingService:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        minimum-number-of-calls: 10
+      creatorService:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        minimum-number-of-calls: 10
+  timelimiter:
+    instances:
+      waitingService:
+        timeout-duration: 2s
+      creatorService:
+        timeout-duration: 2s

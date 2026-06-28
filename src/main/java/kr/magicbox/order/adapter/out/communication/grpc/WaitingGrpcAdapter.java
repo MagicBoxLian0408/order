@@ -8,7 +8,6 @@ import io.grpc.ManagedChannel;
 import kr.magicbox.order.adapter.out.communication.grpc.exception.WaitingServiceUnavailableException;
 import kr.magicbox.order.application.port.out.PurchaseTokenValidationPort;
 import kr.magicbox.order.grpc.waiting.ValidatePurchaseTokenRequest;
-import kr.magicbox.order.grpc.waiting.ValidatePurchaseTokenResponse;
 import kr.magicbox.order.grpc.waiting.WaitingServiceGrpc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,17 +26,15 @@ public class WaitingGrpcAdapter implements PurchaseTokenValidationPort {
     @CircuitBreaker(name = "waitingService", fallbackMethod = "validateFallback")
     @TimeLimiter(name = "waitingService", fallbackMethod = "validateFallback")
     public CompletableFuture<Boolean> validate(Long releaseId, Long userId, String purchaseToken) {
-        ValidatePurchaseTokenRequest request = ValidatePurchaseTokenRequest.newBuilder()
-                .setReleaseId(releaseId)
-                .setUserId(userId)
-                .setPurchaseToken(purchaseToken)
-                .build();
-
-        WaitingServiceGrpc.WaitingServiceFutureStub stub = WaitingServiceGrpc.newFutureStub(waitingManagedChannel);
-        ListenableFuture<ValidatePurchaseTokenResponse> future = stub.validatePurchaseToken(request);
-        ValidatePurchaseTokenResponse response = Futures.getUnchecked(future);
-
-        return CompletableFuture.completedFuture(response.getValid());
+        return GrpcFutures.toCompletable(
+                WaitingServiceGrpc.newFutureStub(waitingManagedChannel).validatePurchaseToken(
+                        ValidatePurchaseTokenRequest.newBuilder()
+                                .setReleaseId(releaseId)
+                                .setUserId(userId)
+                                .setPurchaseToken(purchaseToken)
+                                .build()
+                )
+        ).thenApply(response -> response.getValid());
     }
 
     @SuppressWarnings("unused")
