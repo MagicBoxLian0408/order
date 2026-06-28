@@ -3,11 +3,14 @@ package kr.magicbox.order.adapter.in.kafka;
 import kr.magicbox.order.adapter.in.kafka.annotation.Idempotent;
 import kr.magicbox.order.adapter.in.kafka.event.DeliveryCompletedEvent;
 import kr.magicbox.order.adapter.in.kafka.event.DeliveryStartedEvent;
+import kr.magicbox.order.adapter.out.persistence.entity.OrderInboxEntity;
+import kr.magicbox.order.adapter.out.persistence.repository.OrderInboxJpaRepository;
 import kr.magicbox.order.application.port.in.HandleDeliveryCompletedUseCase;
 import kr.magicbox.order.application.port.in.HandleDeliveryStartedUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.DltStrategy;
@@ -21,6 +24,7 @@ public class DeliveryEventKafkaListener {
 
     private final HandleDeliveryStartedUseCase handleDeliveryStartedUseCase;
     private final HandleDeliveryCompletedUseCase handleDeliveryCompletedUseCase;
+    private final OrderInboxJpaRepository orderInboxJpaRepository;
 
     @Idempotent
     @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {kr.magicbox.order.global.exception.BusinessException.class})
@@ -38,5 +42,12 @@ public class DeliveryEventKafkaListener {
         log.info("[Inbox] delivery.completed 이벤트 수신. eventId={}", consumerRecord.key());
         DeliveryCompletedEvent event = consumerRecord.value();
         handleDeliveryCompletedUseCase.handleDeliveryCompleted(event.orderId(), event.orderLineId());
+    }
+
+    @DltHandler
+    public void handleDlt(ConsumerRecord<String, ?> consumerRecord) {
+        log.error("[Inbox] DLT 전환. topic={}, partition={}, offset={}", consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset());
+        orderInboxJpaRepository.findByTopicAndPartitionAndOffset(consumerRecord.topic(), consumerRecord.partition(), consumerRecord.offset())
+                .ifPresent(OrderInboxEntity::markDeadLettered);
     }
 }
